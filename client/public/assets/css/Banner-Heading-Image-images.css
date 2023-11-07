@@ -1,0 +1,22 @@
+.fit-cover {
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  #pagiantion {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  #chart {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  #chart {
+    display: flex;
+  }
+}
+

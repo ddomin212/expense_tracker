@@ -1,0 +1,50 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Expenses tracker app backend",
+  "main": "server.js",
+  "engine": {
+    "node": "18.12.1"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [
+    "MERN"
+  ],
+  "author": "bruh",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.3.2",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "degiro-api": "^0.5.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.7.0",
+    "find-config": "^1.0.0",
+    "helmet": "^6.1.5",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.0",
+    "mongoose-paginate-v2": "^1.7.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.1",
+    "nodemailer-sendgrid": "^1.0.3",
+    "openai": "^3.1.0",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.1",
+    "rot13-cipher": "^1.0.0",
+    "speakeasy": "^2.0.0",
+    "stripe": "^11.9.1",
+    "xapi-node": "^2.6.2",
+    "xss": "^1.0.14",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
