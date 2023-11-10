@@ -1,11 +1,11 @@
-const { DeGiroEnums, DeGiroTypes } = require("degiro-api");
+const { DeGiroEnums } = require("degiro-api");
 const DeGiro = require("degiro-api").default;
 const { PORTFOLIO_POSITIONS_TYPE_ENUM } = DeGiroEnums;
 
-const connectDegiro = async () => {
+const connectDegiro = async (username, pwd) => {
   const degiro = DeGiro.create({
-    username: "gouda585",
-    pwd: "Stdomin90bb5",
+    username,
+    pwd,
   });
 
   await degiro.login();
@@ -14,6 +14,7 @@ const connectDegiro = async () => {
     type: PORTFOLIO_POSITIONS_TYPE_ENUM.ALL,
     getProductDetails: true,
   });
+
   return portfolio;
 };
 module.exports = connectDegiro;

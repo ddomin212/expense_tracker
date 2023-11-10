@@ -6,7 +6,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = process.env.REACT_APP_FIREBASE_CONFIG;
+const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_JSON);
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);

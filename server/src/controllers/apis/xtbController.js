@@ -5,8 +5,9 @@ const data = require("../../../data/xtb.json");
 const dataUser = require("../../../data/xtbUser.json");
 const dataMargin = require("../../../data/xtbMargin.json");
 const rot13Cipher = require("rot13-cipher");
-//@connect xtb api
-//@POST /api/connect/xtb
+
+//@desc connect xtb api
+//@route POST /api/connect/xtb
 //@access private
 const connectXtb = async (req, res, next) => {
   const { xtbId, xtbPass } = req.body;
@@ -24,36 +25,42 @@ const connectXtb = async (req, res, next) => {
   await connectXTB(xtbId, xtbPass);
   next();
 };
+
+//@desc upload XTB data to mongo
+//@route POST /api/connect/xtb
+//@access private
 const uploadXtb = async (req, res) => {
   const id = req.user?._id;
   console.log(data);
-  const trades = data.returnData.map((trade) => {
-    return {
-      title: trade.symbol,
-      amount:
-        dataUser.returnData.currency === "CZK"
-          ? trade.profit
-          : dataUser.returnData.currency === "EUR"
-          ? trade.profit * 23.7
-          : trade.profit * 22.1,
-      description: "XTB stock",
-      created: trade.openTime,
+
+  const trades = data.returnData
+    .map((trade) => {
+      return {
+        title: trade.symbol,
+        amount:
+          dataUser.returnData.currency === "CZK"
+            ? trade.profit
+            : dataUser.returnData.currency === "EUR"
+            ? trade.profit * 23.7
+            : trade.profit * 22.1,
+        description: "XTB stock",
+        created: trade.openTime,
+        currency: dataUser.returnData.currency,
+        type: "xtb",
+        user: id,
+        tid: trade.order,
+      };
+    })
+    .push({
+      title: "CASH",
+      amount: dataMargin.returnData.margin_free,
+      description: "XTB cash",
+      created: new Date(dataMargin.time.UTCTimestamp),
       currency: dataUser.returnData.currency,
       type: "xtb",
       user: id,
-      tid: trade.order,
-    };
-  });
-  trades.push({
-    title: "CASH",
-    amount: dataMargin.returnData.margin_free,
-    description: "XTB cash",
-    created: new Date(dataMargin.time.UTCTimestamp),
-    currency: dataUser.returnData.currency,
-    type: "xtb",
-    user: id,
-    tid: "FOREX_XTB",
-  });
+      tid: "FOREX_XTB",
+    });
   if (!trades) {
     return res.status(404).json({ message: "No trades found" });
   }
@@ -64,9 +71,6 @@ const uploadXtb = async (req, res) => {
   }
   res.status(200).json({ message: "Success" });
 };
-//@connect xtb api
-//@POST /api/connect/xtb
-//@access private
 
 //@ disconnect xtb api
 //@ GET /api/connect/xtb/rm

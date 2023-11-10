@@ -5,6 +5,7 @@ const {
   authMiddleware,
   authorizeRoles,
 } = require("../middleware/authMiddleware");
+
 router
   .route("/")
   .post(addContact)

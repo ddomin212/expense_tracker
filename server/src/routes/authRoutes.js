@@ -8,6 +8,7 @@ const {
   forgotPassword,
   resetPassword,
 } = require("../controllers/authController");
+
 const { authMiddleware } = require("../middleware/authMiddleware");
 router.route("/").post(login);
 router.route("/logout").get(logout);

@@ -21,6 +21,7 @@ const {
   authMiddleware,
   authorizeRoles,
 } = require("../middleware/authMiddleware");
+
 router.route("/fio").post(authMiddleware, connectFio);
 router.route("/fio/rm").get(authMiddleware, disconnectFio);
 router.route("/fio/up").get(authMiddleware, updateFio, connectFio);

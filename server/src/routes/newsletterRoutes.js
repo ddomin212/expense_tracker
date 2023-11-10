@@ -8,6 +8,7 @@ const {
   authorizeRoles,
   authMiddleware,
 } = require("../middleware/authMiddleware");
+
 router
   .route("/")
   .post(addNewsletter)

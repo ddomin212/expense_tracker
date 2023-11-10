@@ -1,5 +1,6 @@
 const XAPI = require("xapi-node");
 const fs = require("fs");
+
 const connectXTB = async (xtbId, xtbPass) => {
   const x = new XAPI.default({
     accountId: xtbId,
@@ -9,6 +10,7 @@ const connectXTB = async (xtbId, xtbPass) => {
   });
   x.connect();
 
+  // save various responses as files because promises drive me crazy
   x.onReady(() => {
     console.log("Connection is ready");
     x.Socket.send

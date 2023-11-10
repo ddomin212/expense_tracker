@@ -13,6 +13,7 @@ const {
   authMiddleware,
   authorizeRoles,
 } = require("../middleware/authMiddleware");
+
 router.use(authMiddleware);
 router
   .route("/")

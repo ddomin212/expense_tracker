@@ -3,3 +3,6 @@
 **/build
 **/firebase.json
 **/.env
+**/nodemailerConfig.js
+**/originUrl.js
+**/baseUrl.js
