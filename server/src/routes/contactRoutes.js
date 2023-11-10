@@ -6,8 +6,15 @@ const {
   authorizeRoles,
 } = require("../middleware/authMiddleware");
 
-router
-  .route("/")
-  .post(addContact)
-  .get([authMiddleware, authorizeRoles("Admin")], getContacts);
+/**
+ * Route to add a new contact
+ */
+router.route("/").post(addContact);
+
+/**
+ * Route to get all contacts (admin only)
+ */
+router.route("/").get([authMiddleware, authorizeRoles("Admin")], getContacts);
+
+// Export the router for use in other modules
 module.exports = router;

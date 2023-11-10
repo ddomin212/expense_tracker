@@ -9,8 +9,15 @@ const {
   authMiddleware,
 } = require("../middleware/authMiddleware");
 
-router
-  .route("/")
-  .post(addNewsletter)
-  .get(authMiddleware, authorizeRoles("Admin"), getNewsletters);
+/**
+ * Route to add a new newsletter sub
+ */
+router.route("/").post(addNewsletter);
+
+/**
+ * Route to get all newsletter subs (admin only)
+ */
+router.route("/").get(authMiddleware, authorizeRoles("Admin"), getNewsletters);
+
+// Export the router for use in other modules
 module.exports = router;

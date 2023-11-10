@@ -6,6 +6,12 @@ const {
   createDecipheriv,
 } = require("crypto");
 const { Buffer } = require("buffer");
+
+/**
+ * Encrypts a password using the AES-192-CBC algorithm.
+ * @param {string} pass - The password to encrypt.
+ * @returns {string} The encrypted password.
+ */
 const cipherAlg = (pass) => {
   const algorithm = "aes-192-cbc";
   const password = process.env.CIPHER_KEY;
@@ -27,10 +33,16 @@ const cipherAlg = (pass) => {
     });
   });
 };
+
+/**
+ * Decrypts a password that was encrypted using the AES-192-CBC algorithm.
+ * @param {string} cipher - The encrypted password to decrypt.
+ * @returns {string} The decrypted password.
+ */
 const decipherAlg = (cipher) => {
   const algorithm = "aes-192-cbc";
   const password = process.env.CIPHER_KEY;
-  // Use the async `crypto.scrypt()` instead.
+  // Use the synchronous `crypto.scrypt()` instead.
   const key = scryptSync(password, "salt", 24);
   // The IV is usually passed along with the ciphertext.
   const iv = Buffer.alloc(16, 0); // Initialization vector.
@@ -43,4 +55,5 @@ const decipherAlg = (cipher) => {
   console.log(decrypted);
   return decrypted;
 };
+
 module.exports = { cipherAlg, decipherAlg };

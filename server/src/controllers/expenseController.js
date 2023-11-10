@@ -13,6 +13,7 @@ const getExpenses = async (req, res) => {
   }
   res.status(200).json(expenses);
 };
+
 // @desc    Get all expenses
 // @route   GET /api/expenses
 // @access  Private
@@ -26,6 +27,7 @@ const getAllExpenses = async (req, res) => {
   }
   res.status(200).json(expenses);
 };
+
 // @desc    Get expense by id
 // @route   GET /api/expenses/:id
 // @access  Private
@@ -36,6 +38,7 @@ const getExpenseById = async (req, res) => {
   }
   res.status(200).json(expense);
 };
+
 // @desc    Create expense
 // @route   POST /api/expenses
 // @access  Private
@@ -53,6 +56,7 @@ const createExpense = async (req, res) => {
   });
   res.status(200).json({ msg: "Expense created" });
 };
+
 // @desc    Update expense
 // @route   PATCH /api/expenses/:id
 // @access  Private
@@ -71,6 +75,7 @@ const updateExpense = async (req, res) => {
   await expense.save();
   res.status(200).json(expense);
 };
+
 // @desc    Delete expense
 // @route   DELETE /api/expenses/:id
 // @access  Private
@@ -88,7 +93,6 @@ const deleteExpense = async (req, res) => {
 // @desc    Get expenses by date, type and amount
 // @route   POST /api/expenses/filter
 // @access  Private
-
 const getFilteredExpenses = async (req, res) => {
   const { startDate, endDate, min, max, type } = req.body;
   if (!startDate || !endDate || !min || !max || !type) {
@@ -116,6 +120,7 @@ const getFilteredExpenses = async (req, res) => {
   }
   return res.status(200).json(expenses);
 };
+
 module.exports = {
   getExpenses,
   getAllExpenses,

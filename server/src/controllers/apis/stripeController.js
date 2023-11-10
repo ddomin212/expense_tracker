@@ -1,5 +1,6 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const User = require("../../models/User");
+
 // @desc    Create stripe checkout session
 // @route   POST /api/stripe/checkout-session
 // @access  Private
@@ -30,6 +31,7 @@ const createCheckoutSession = async (req, res) => {
   await user.save();
   res.redirect(303, session.url);
 };
+
 //@desc fetch verificationToken
 //@route GET /stripe/fetch
 //@access Private

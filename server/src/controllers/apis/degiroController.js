@@ -3,26 +3,7 @@ const Income = require("../../models/Income");
 const User = require("../../models/User");
 const rot13Cipher = require("rot13-cipher");
 
-//@desc    Connect Degiro
-//@route   POST /api/connect/degiro
-//@access  Private
-const connectDegiroAPI = async (req, res, next) => {
-  const { degiroId, degiroPass } = req.body;
-  const id = req.user?._id;
-  const user = await User.findById(id);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  user.apiKeys = {
-    ...user.apiKeys,
-    degiro: { degiroId, degiroPass: rot13Cipher(degiroPass) }, //do produkce by to pak asi bylo lepsi zasifrovat víc
-  };
-  user.save();
-  next();
-};
-
-const parseDegiroData = (data) => {
+const parseDegiroData = (trade, id) => {
   const amount =
     trade.positionType === "CASH"
       ? trade.value
@@ -44,6 +25,25 @@ const parseDegiroData = (data) => {
   };
 };
 
+//@desc    Connect Degiro
+//@route   POST /api/connect/degiro
+//@access  Private
+const connectDegiroAPI = async (req, res, next) => {
+  const { degiroId, degiroPass } = req.body;
+  const id = req.user?._id;
+  const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.apiKeys = {
+    ...user.apiKeys,
+    degiro: { degiroId, degiroPass: rot13Cipher(degiroPass) }, //do produkce by to pak asi bylo lepsi zasifrovat víc
+  };
+  user.save();
+  next();
+};
+
 const uploadDegiro = async (req, res) => {
   const id = req.user?._id;
 
@@ -55,9 +55,10 @@ const uploadDegiro = async (req, res) => {
   const { degiroId, degiroPass } = user.apiKeys.degiro;
   const data = await connectDegiro(degiroId, rot13Cipher(degiroPass));
 
-  const filtered = data.filter((trade) => trade.value).map(parseDegiroData);
+  const filtered = data
+    .filter((trade) => trade.value)
+    .map((trade) => parseDegiroData(trade, id));
 
-  console.log(filtered);
   if (!filtered) {
     return res.status(404).json({ message: "No trades found" });
   }
@@ -69,6 +70,9 @@ const uploadDegiro = async (req, res) => {
   return res.status(200).json({ message: "Success" });
 };
 
+//@desc    Connect Degiro
+//@route   POST /api/connect/degiro/rm
+//@access  Private
 const disconnectDegiro = async (req, res, next) => {
   const id = req.user?._id;
   const user = await User.findById(id);
@@ -86,6 +90,9 @@ const disconnectDegiro = async (req, res, next) => {
   next();
 };
 
+//@desc    Connect Degiro
+//@route   POST /api/connect/degiro/up
+//@access  Private
 const updateDegiro = async (req, res, next) => {
   const id = req.user?._id;
   const user = await User.findById(id);
