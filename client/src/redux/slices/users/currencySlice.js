@@ -1,86 +1,32 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import baseUrl from "../../../utils/baseUrl";
-export const fetchUserCurrency = createAsyncThunk(
+import { createSlice } from "@reduxjs/toolkit";
+import createAsyncSlice, { addBuilderCases } from "../../../utils/reduxSlice";
+
+export const fetchUserCurrency = createAsyncSlice(
   "currency/fetch",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.get(`${baseUrl}/api/users/currency`, config);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "GET",
+  "users/currency",
+  true
 );
-export const upUserCurrency = createAsyncThunk(
+
+export const upUserCurrency = createAsyncSlice(
   "currency/update",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.post(
-        `${baseUrl}/api/users/currency`,
-        payload,
-        config
-      );
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "POST",
+  "users/currency",
+  true
 );
+
 const currencySlices = createSlice({
   name: "currency",
   initialState: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUserCurrency.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchUserCurrency.fulfilled, (state, action) => {
-      state.loading = false;
-      state.currency = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchUserCurrency.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(upUserCurrency.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(upUserCurrency.fulfilled, (state, action) => {
-      state.loading = false;
-      state.currency = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(upUserCurrency.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
+    addBuilderCases(
+      [
+        [fetchUserCurrency, "currency"],
+        [upUserCurrency, "currency"],
+      ],
+      builder,
+      true
+    );
   },
 });
 export default currencySlices.reducer;

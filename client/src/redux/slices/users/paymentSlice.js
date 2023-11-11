@@ -1,46 +1,19 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import baseUrl from "../../../utils/baseUrl";
-export const fetchUserPayment = createAsyncThunk(
+import { createSlice } from "@reduxjs/toolkit";
+import createAsyncSlice, { addBuilderCases } from "../../../utils/reduxSlice";
+
+export const fetchUserPayment = createAsyncSlice(
   "payment/fetch",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.get(`${baseUrl}/stripe/fetch`, config);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "GET",
+  "stripe/fetch",
+  true
 );
+
 const paymentSlices = createSlice({
   name: "payment",
   initialState: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchUserPayment.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchUserPayment.fulfilled, (state, action) => {
-      state.loading = false;
-      state.payment = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchUserPayment.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
+    addBuilderCases([[fetchUserPayment, "payment"]], builder, true);
   },
 });
+
 export default paymentSlices.reducer;

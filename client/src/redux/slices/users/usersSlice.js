@@ -1,44 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseUrl from "../../../utils/baseUrl";
-//Login action
-export const loginUserAction = createAsyncThunk(
+import createAsyncSlice from "../../../utils/reduxSlice";
+
+export const loginUserAction = createAsyncSlice(
   "users/login",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      const res = await axios.post(`${baseUrl}/api/auth`, payload, config);
-      //parse cookie
-      localStorage.setItem("user", JSON.stringify(res.data));
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
+  "POST",
+  "auth",
+  false,
+  ({ res }) => {
+    localStorage.setItem("user", JSON.stringify(res.data));
   }
 );
 
-export const registerUserAction = createAsyncThunk(
+export const registerUserAction = createAsyncSlice(
   "users/register",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      const res = await axios.post(`${baseUrl}/api/users`, payload, config);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "POST",
+  "users",
+  false
 );
+
 export const updateUserAction = createAsyncThunk(
   "users/update",
   async (payload, { rejectWithValue, getState, dispatch }) => {
@@ -70,7 +51,7 @@ export const updateUserAction = createAsyncThunk(
     }
   }
 );
-//create a redux action that deletes userAuth from localStorage and redux store
+
 export const logoutUserAction = createAsyncThunk(
   "users/logout",
   async (payload, { rejectWithValue, getState, dispatch }) => {
@@ -86,12 +67,6 @@ export const logoutUserAction = createAsyncThunk(
     }
   }
 );
-const state = {
-  userAuth: undefined,
-  userLoading: false,
-  userAppErr: undefined,
-  userServerErr: undefined,
-};
 
 //slices
 const userSlices = createSlice({

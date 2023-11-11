@@ -1,29 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseUrl from "../../../utils/baseUrl";
-//Login action
-export const recordIncome = createAsyncThunk(
-  "income/add",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.post(`${baseUrl}/api/incomes`, payload, config);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+import createAsyncSlice, { addBuilderCases } from "../../../utils/reduxSlice";
+
+export const recordIncome = createAsyncSlice(
+  "incomes/add",
+  "POST",
+  "incomes",
+  true
 );
 
-export const fetchIncome = createAsyncThunk(
+export const fetchIncomes = createAsyncThunk(
   "income/fetch",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const token =
@@ -73,7 +60,7 @@ export const editIncome = createAsyncThunk(
   }
 );
 
-export const fetchFilteredIncome = createAsyncThunk(
+export const fetchFilteredIncomes = createAsyncThunk(
   "incomes/fetch/filter",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const { page, values } = payload;
@@ -103,70 +90,16 @@ const incomeSlices = createSlice({
   name: "income",
   initialState: {},
   extraReducers: (builder) => {
-    builder.addCase(recordIncome.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(recordIncome.fulfilled, (state, action) => {
-      state.loading = false;
-      state.created = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(recordIncome.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(fetchIncome.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchIncome.fulfilled, (state, action) => {
-      state.loading = false;
-      state.created = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchIncome.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(editIncome.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(editIncome.fulfilled, (state, action) => {
-      state.loading = false;
-      state.created = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(editIncome.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(fetchFilteredIncome.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchFilteredIncome.fulfilled, (state, action) => {
-      state.loading = false;
-      state.created = action.payload;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchFilteredIncome.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
+    addBuilderCases(
+      [
+        [recordIncome, "created"],
+        [fetchIncomes, "created"],
+        [fetchFilteredIncomes, "created"],
+        [editIncome, "created"],
+      ],
+      builder,
+      true
+    );
   },
 });
 

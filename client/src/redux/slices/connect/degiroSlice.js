@@ -1,128 +1,41 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-import baseUrl from "../../../utils/baseUrl";
+import { createSlice } from "@reduxjs/toolkit";
+import createAsyncSlice, { addBuilderCases } from "../../../utils/reduxSlice";
 
-export const connectDegiroAction = createAsyncThunk(
+export const connectDegiroAction = createAsyncSlice(
   "connect/degiro/create",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.post(
-        `${baseUrl}/api/connect/degiro`,
-        payload,
-        config
-      );
-      localStorage.setItem("degiro", true);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "POST",
+  "connect/degiro",
+  true,
+  () => localStorage.setItem("degiro", true)
 );
 
-export const disconnectDegiroAction = createAsyncThunk(
+export const disconnectDegiroAction = createAsyncSlice(
   "connect/degiro/delete",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.get(`${baseUrl}/api/connect/degiro/rm`, config);
-      localStorage.removeItem("degiro");
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "GET",
+  "connect/degiro/rm",
+  true,
+  () => localStorage.removeItem("degiro")
 );
 
-export const fetchDegiroAction = createAsyncThunk(
+export const fetchDegiroAction = createAsyncSlice(
   "connect/degiro/fetch",
-  async (payload, { rejectWithValue, getState, dispatch }) => {
-    const token =
-      getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const res = await axios.get(`${baseUrl}/api/connect/degiro/up`, config);
-      return res.data;
-    } catch (err) {
-      if (!err?.response) throw err;
-      return rejectWithValue(err?.response?.data);
-    }
-  }
+  "GET",
+  "connect/degiro/up",
+  true
 );
 
 const degiroSlice = createSlice({
   name: "degiro",
   initialState: { connected: localStorage.getItem("degiro") ? true : false },
   extraReducers: (builder) => {
-    builder.addCase(connectDegiroAction.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(connectDegiroAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.connected = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(connectDegiroAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(disconnectDegiroAction.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(disconnectDegiroAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.disconnected = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(disconnectDegiroAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
-    builder.addCase(fetchDegiroAction.pending, (state) => {
-      state.loading = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchDegiroAction.fulfilled, (state, action) => {
-      state.loading = false;
-      state.updated = true;
-      state.appErr = undefined;
-      state.serverErr = undefined;
-    });
-    builder.addCase(fetchDegiroAction.rejected, (state, action) => {
-      state.loading = false;
-      state.appErr = action.payload?.msg;
-      state.serverErr = action.payload?.error;
-    });
+    addBuilderCases(
+      [
+        [connectDegiroAction, "connected"],
+        [disconnectDegiroAction, "disconnected"],
+        [fetchDegiroAction, "updated"],
+      ],
+      builder
+    );
   },
 });
 export default degiroSlice.reducer;
