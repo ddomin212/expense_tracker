@@ -8,7 +8,6 @@ export const connectDegiroAction = createAsyncThunk(
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -28,13 +27,13 @@ export const connectDegiroAction = createAsyncThunk(
     }
   }
 );
+
 export const disconnectDegiroAction = createAsyncThunk(
   "connect/degiro/delete",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -50,13 +49,13 @@ export const disconnectDegiroAction = createAsyncThunk(
     }
   }
 );
+
 export const fetchDegiroAction = createAsyncThunk(
   "connect/degiro/fetch",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

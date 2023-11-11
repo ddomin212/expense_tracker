@@ -11,6 +11,7 @@ import xtbSlice from "../slices/connect/xtbSlice";
 import degiroSlice from "../slices/connect/degiroSlice";
 import currencySlices from "../slices/users/currencySlice";
 import paymentSlices from "../slices/users/paymentSlice";
+
 const store = configureStore({
   reducer: {
     users: userSlices,

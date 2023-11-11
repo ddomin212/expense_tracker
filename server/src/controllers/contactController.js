@@ -1,6 +1,6 @@
 const Contact = require("../models/Contact");
 
-//@desc Get all contacts
+//@desc Get all messages from contact form
 //@route GET /api/contact
 //@access Public
 const getContacts = async (req, res, next) => {
@@ -18,7 +18,8 @@ const getContacts = async (req, res, next) => {
     });
   }
 };
-//@desc Add contact
+
+//@desc Add contact form message
 //@route POST /api/contact
 //@access Public
 const addContact = async (req, res, next) => {
@@ -47,7 +48,8 @@ const addContact = async (req, res, next) => {
     }
   }
 };
-//@desc Delete contact
+
+//@desc Delete contact form message
 //@route DELETE /api/contact/:id
 //@access Public
 const deleteContact = async (req, res, next) => {
@@ -71,7 +73,8 @@ const deleteContact = async (req, res, next) => {
     });
   }
 };
-//@desc Update contact
+
+//@desc Update contact form message
 //@route PUT /api/contact/:id
 //@access Public
 const updateContact = async (req, res, next) => {

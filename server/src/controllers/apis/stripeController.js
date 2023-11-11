@@ -7,10 +7,10 @@ const User = require("../../models/User");
 const createCheckoutSession = async (req, res) => {
   const { tier } = req.params;
   const { id } = req.query;
-  console.log(id);
   if (!tier) {
     return res.status(400).json({ msg: "Please select a payment tier" });
   }
+
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     payment_method_types: ["card"],
@@ -26,6 +26,7 @@ const createCheckoutSession = async (req, res) => {
     success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${tier}`,
     cancel_url: `${process.env.CLIENT_URL}/cancel`,
   });
+
   const user = await User.findById(id);
   user.verificationToken = session.id;
   await user.save();

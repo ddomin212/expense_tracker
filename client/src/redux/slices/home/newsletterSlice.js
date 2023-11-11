@@ -5,7 +5,6 @@ export const newsletterSubAction = createAsyncThunk(
   "newsletter/sub",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
       },

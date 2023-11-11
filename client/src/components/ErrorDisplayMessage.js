@@ -1,6 +1,6 @@
 import React from "react";
 
-const ErrorDisplayMessage = ({ children }) => {
+const ErrorDisplayMessage = ({ message }) => {
   return (
     <div
       style={{
@@ -11,7 +11,7 @@ const ErrorDisplayMessage = ({ children }) => {
       }}
     >
       <p class="alert alert-danger" role="alert">
-        {children}
+        {message}
       </p>
     </div>
   );

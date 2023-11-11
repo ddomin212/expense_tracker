@@ -1,4 +1,5 @@
 const Newsletter = require("../models/Newsletter");
+
 //@desc Add newsletter
 //@route POST /api/newsletter
 //@access Public
@@ -8,8 +9,9 @@ const addNewsletter = async (req, res, next) => {
     if (!email) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
+
     const newsletter = await Newsletter.create(req.body);
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       data: newsletter,
     });
@@ -28,6 +30,7 @@ const addNewsletter = async (req, res, next) => {
     }
   }
 };
+
 //@desc get all newsletters
 //@route GET /api/newsletter
 //@access Public
@@ -46,6 +49,7 @@ const getNewsletters = async (req, res, next) => {
     });
   }
 };
+
 module.exports = {
   addNewsletter,
   getNewsletters,

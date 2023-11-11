@@ -6,7 +6,6 @@ export const loginUserAction = createAsyncThunk(
   "users/login",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
       },
@@ -27,7 +26,6 @@ export const registerUserAction = createAsyncThunk(
   "users/register",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
       },
@@ -48,7 +46,6 @@ export const updateUserAction = createAsyncThunk(
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

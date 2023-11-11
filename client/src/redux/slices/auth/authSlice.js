@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import baseUrl from "../../../utils/baseUrl";
+
 export const forgotPassAction = createAsyncThunk(
   "auth/forgot",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
       },
@@ -25,12 +25,12 @@ export const forgotPassAction = createAsyncThunk(
     }
   }
 );
+
 export const resetPassAction = createAsyncThunk(
   "auth/reset",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     console.log(payload);
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
       },
@@ -49,13 +49,13 @@ export const resetPassAction = createAsyncThunk(
     }
   }
 );
+
 export const verifyPassAction = createAsyncThunk(
   "auth/verify",
   async (payload, { rejectWithValue, getState, dispatch }) => {
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -75,6 +75,7 @@ export const verifyPassAction = createAsyncThunk(
     }
   }
 );
+
 const authSlices = createSlice({
   name: "auth",
   initialState: {},

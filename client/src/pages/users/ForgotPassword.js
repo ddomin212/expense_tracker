@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { forgotPassAction } from "../../redux/slices/auth/authSlice";
+import ErrorInlineMessage from "../../components/ErrorInlineMessage";
+import FormItem from "../../components/FormItem";
+
 const formSchema = Yup.object({
   email: Yup.string().required("Required field"),
 });
@@ -10,7 +13,7 @@ function ForgotPass() {
   const dispatch = useDispatch();
   const auth = useSelector((state) => state?.auth);
   const { appErr, serverErr, loading, forgot } = auth;
-  //formik form
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -20,6 +23,7 @@ function ForgotPass() {
     },
     validationSchema: formSchema,
   });
+
   return (
     <section class="py-4 py-xl-5">
       <div class="container">
@@ -28,21 +32,8 @@ function ForgotPass() {
 
       <form class="form-inline" onSubmit={formik.handleSubmit}>
         <div class="container d-flex justify-content-center flex-wrap">
-          {(appErr || serverErr) && !forgot ? (
-            <div class="alert alert-danger" role="alert">
-              {serverErr} {appErr}
-            </div>
-          ) : null}
-          <input
-            class="form-control"
-            type="text"
-            value={formik.values.email}
-            onChange={formik.handleChange("email")}
-            onBlur={formik.handleBlur("email")}
-            style={{ width: "35%", minWidth: "300px", marginTop: "10px" }}
-            placeholder="Type your email here"
-            name="email"
-          />
+          <ErrorInlineMessage appErr={appErr} serverErr={serverErr} />
+          <FormItem formik={formik} name={"email"} />
         </div>
         <div class="container d-flex justify-content-center flex-wrap">
           <button

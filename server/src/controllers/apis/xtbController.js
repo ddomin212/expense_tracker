@@ -12,16 +12,17 @@ const rot13Cipher = require("rot13-cipher");
 const connectXtb = async (req, res, next) => {
   const { xtbId, xtbPass } = req.body;
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-
   user.apiKeys = {
     ...user.apiKeys,
     xtb: { xtbId, xtbPass: rot13Cipher(xtbPass) }, //do produkce by to pak asi bylo lepsi zasifrovat víc
   };
   user.save();
+
   await connectXTB(xtbId, xtbPass);
   next();
 };
@@ -69,6 +70,7 @@ const uploadXtb = async (req, res) => {
   if (!income) {
     return res.status(400).json({ message: "Insert error" });
   }
+
   res.status(200).json({ message: "Success" });
 };
 
@@ -77,12 +79,14 @@ const uploadXtb = async (req, res) => {
 //@ access private
 const disconnectXtb = async (req, res, next) => {
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
   user.apiKeys = { ...user.apiKeys, xtb: "" };
   user.save();
+
   const income = await Income.deleteMany({ type: "xtb", user: id });
   if (!income) {
     return res.status(404).json({ message: "No data found" });
@@ -91,20 +95,23 @@ const disconnectXtb = async (req, res, next) => {
   res.status(200).json({ message: "Success" });
   next();
 };
+
 //@ fetch xtb data
 //@ GET /api/connect/xtb/up
 //@ access private
 const updateXtb = async (req, res, next) => {
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(user.apiKeys);
+
   const { xtbId, xtbPass } = user.apiKeys.xtb;
   req.body.xtbId = xtbId;
   req.body.xtbPass = rot13Cipher(xtbPass);
+
   next();
-  //disconnectXtb(req, res);connectXtb(req, res);
 };
+
 module.exports = { connectXtb, disconnectXtb, updateXtb, uploadXtb };

@@ -23,4 +23,5 @@ const assignRank = (value) => {
   }
   return rank;
 };
+
 module.exports = assignRank;

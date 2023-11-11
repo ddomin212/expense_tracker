@@ -6,8 +6,10 @@ const currencyData = require("../../../data/currency.json");
 //@access Private
 const updateUserCurrency = async (req, res) => {
   const { activeCurrency } = req.body;
+
   const user = await User.findById(req.user._id);
   if (!user) return res.status(404).json({ message: "User not found" });
+
   user.currency = activeCurrency;
   await user.save();
   res.status(200).json({ currency: user.currency });
@@ -19,6 +21,7 @@ const updateUserCurrency = async (req, res) => {
 const getUserCurrency = async (req, res) => {
   const user = await User.findById(req.user._id);
   if (!user) return res.status(404).json({ message: "User not found" });
+
   res.status(200).json({ currency: user.currency, currencyData });
 };
 

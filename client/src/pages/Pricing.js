@@ -1,7 +1,8 @@
 import React from "react";
-import Footer from "../components/Footer";
+
 import { useSelector } from "react-redux";
 import baseUrl from "../utils/baseUrl";
+
 const PricingTiles = () => {
   const user = useSelector((state) => state?.users);
   const { userAuth } = user;
@@ -182,7 +183,6 @@ const PricingTiles = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

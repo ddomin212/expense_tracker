@@ -31,6 +31,7 @@ const parseDegiroData = (trade, id) => {
 const connectDegiroAPI = async (req, res, next) => {
   const { degiroId, degiroPass } = req.body;
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
@@ -41,6 +42,7 @@ const connectDegiroAPI = async (req, res, next) => {
     degiro: { degiroId, degiroPass: rot13Cipher(degiroPass) }, //do produkce by to pak asi bylo lepsi zasifrovat víc
   };
   user.save();
+
   next();
 };
 
@@ -51,14 +53,12 @@ const uploadDegiro = async (req, res) => {
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(user.apiKeys);
+
   const { degiroId, degiroPass } = user.apiKeys.degiro;
   const data = await connectDegiro(degiroId, rot13Cipher(degiroPass));
-
   const filtered = data
     .filter((trade) => trade.value)
     .map((trade) => parseDegiroData(trade, id));
-
   if (!filtered) {
     return res.status(404).json({ message: "No trades found" });
   }
@@ -70,17 +70,20 @@ const uploadDegiro = async (req, res) => {
   return res.status(200).json({ message: "Success" });
 };
 
-//@desc    Connect Degiro
+//@desc    disconnect Degiro
 //@route   POST /api/connect/degiro/rm
 //@access  Private
 const disconnectDegiro = async (req, res, next) => {
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
+
   user.apiKeys = { ...user.apiKeys, degiro: "" };
   user.save();
+
   const income = await Income.deleteMany({ type: "degiro", user: id });
   if (!income) {
     return res.status(404).json({ message: "No data found" });
@@ -90,19 +93,21 @@ const disconnectDegiro = async (req, res, next) => {
   next();
 };
 
-//@desc    Connect Degiro
+//@desc    updateDegiro (connect and upload)
 //@route   POST /api/connect/degiro/up
 //@access  Private
 const updateDegiro = async (req, res, next) => {
   const id = req.user?._id;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  console.log(user.apiKeys);
+
   const { degiroId, degiroPass } = user.apiKeys.degiro;
   req.body.degiroId = degiroId;
   req.body.degiroPass = rot13Cipher(degiroPass);
+
   next();
 };
 

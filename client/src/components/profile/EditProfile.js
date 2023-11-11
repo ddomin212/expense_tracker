@@ -5,6 +5,8 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserAction } from "../../redux/slices/users/usersSlice";
 import { verifyPassAction } from "../../redux/slices/auth/authSlice";
+import FormItem from "../FormItem";
+
 const formSchema = Yup.object({
   email: Yup.string(),
   username: Yup.string(),
@@ -16,12 +18,27 @@ const formSchema = Yup.object({
 const EditContent = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const { userAuth, userServerErr, userAppErr, updated } = useSelector(
     (state) => state?.users
   );
+
   const { verified, appErr, serverErr, loading } = useSelector(
     (state) => state?.auth
   );
+
+  const handleUserUpdate = (values, userAuth) => {
+    const { email, username, realname, new_password } = values;
+    const valueObj = {
+      email,
+      username,
+      realname,
+      password: new_password,
+    };
+    dispatch(updateUserAction({ values: valueObj, id: userAuth?.user?.id }));
+    navigate("/profile");
+  };
+
   const formik = useFormik({
     initialValues: {
       email: userAuth?.user?.email,
@@ -30,19 +47,10 @@ const EditContent = () => {
       old_password: "",
       new_password: "",
     },
-    onSubmit: (values) => {
-      const { email, username, realname, new_password } = values;
-      const valueObj = {
-        email,
-        username,
-        realname,
-        password: new_password,
-      };
-      dispatch(updateUserAction({ values: valueObj, id: userAuth?.user?.id }));
-      navigate("/profile");
-    },
+    onSubmit: (values) => handleUserUpdate(values, userAuth),
     validationSchema: formSchema,
   });
+
   return (
     <section className="py-5 bg-gray vh-100">
       <div className="container text-center">
@@ -62,60 +70,11 @@ const EditContent = () => {
               >
                 <span className="text-muted">Profile</span>
                 <h2 className="mb-4 fw-light">Edit your profile</h2>
-                {/* Display Err */}
-                <div className="mb-3 input-group">
-                  <input
-                    value={formik.values.username}
-                    onChange={formik.handleChange("username")}
-                    onBlur={formik.handleBlur("username")}
-                    className="form-control"
-                    type="text"
-                    placeholder="Username"
-                  />
-                </div>
-                {/* Err */}
-                <div className="mb-3 input-group">
-                  <input
-                    value={formik.values.realname}
-                    onChange={formik.handleChange("realname")}
-                    onBlur={formik.handleBlur("realname")}
-                    className="form-control"
-                    type="text"
-                    placeholder="Name"
-                  />
-                </div>
-
-                <div className="mb-3 input-group">
-                  <input
-                    value={formik.values.email}
-                    onChange={formik.handleChange("email")}
-                    onBlur={formik.handleBlur("email")}
-                    className="form-control"
-                    type="text"
-                    placeholder="Enter Email"
-                  />
-                </div>
-                {/* Err */}
-                <div className="mb-3 input-group">
-                  <input
-                    value={formik.values.old_password}
-                    onChange={formik.handleChange("old_password")}
-                    onBlur={formik.handleBlur("old_password")}
-                    className="form-control"
-                    type="text"
-                    placeholder="Old Password"
-                  />
-                </div>
-                <div className="mb-3 input-group">
-                  <input
-                    value={formik.values.new_password}
-                    onChange={formik.handleChange("new_password")}
-                    onBlur={formik.handleBlur("new_password")}
-                    className="form-control"
-                    type="text"
-                    placeholder="Enter New Password"
-                  />
-                </div>
+                <FormItem formik={formik} name="username" />
+                <FormItem formik={formik} name="realname" />
+                <FormItem formik={formik} name="email" />
+                <FormItem formik={formik} name="old_password" type="password" />
+                <FormItem formik={formik} name="new_password" type="password" />
                 <button
                   type="submit"
                   className={`btn ${

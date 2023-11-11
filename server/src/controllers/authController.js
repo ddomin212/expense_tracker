@@ -11,21 +11,21 @@ const { authenticator } = require("otplib");
 // @ desc Login user
 // @ access Public
 const login = async (req, res) => {
-  //console.log(req.body);
   const { email, password, token2fa } = req.body;
+
   if (!email || !password) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
   const user = await User.findOne({ email });
-  //console.log(user);
+
   if (!user) {
-    return res.status(400).json({ msg: "User does not exist" });
+    return res.status(404).json({ msg: "User does not exist" });
   }
   if (!user.isVerified) {
     return res.status(401).json({ msg: "Please verify your email" });
   }
-  const isMatch = await bcrypt.compare(password, user.password);
 
+  const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res.status(401).json({ msg: "Invalid credentials" });
   }
@@ -50,12 +50,14 @@ const login = async (req, res) => {
     },
   });
 };
+
 //@desc verify email
 //@route POST /auth/verify-email
 //@access Public
 const verifyEmail = async (req, res) => {
   const { verificationToken, email } = req.body;
   const user = await User.findOne({ email });
+
   if (user.isVerified) {
     return res.status(400).json({ msg: "Already verified your email" });
   }
@@ -74,22 +76,27 @@ const verifyEmail = async (req, res) => {
 
   return res.status(200).json({ msg: "Email Verified" });
 };
+
 //@desc Verify password
 //@route POST /auth/verify
 //@access Public
 const verifyPassword = async (req, res) => {
   const { password } = req.body;
+
   if (!password) {
     return res.status(400).json({ msg: "Please enter old password" });
   }
+
   const user = await User.findById(req.user?._id);
   if (!user) {
     return res.status(400).json({ msg: "User does not exist" });
   }
+
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res.status(401).json({ msg: "Invalid credentials" });
   }
+
   res.status(200).json({ msg: "Password verified" });
 };
 
@@ -102,6 +109,7 @@ const logout = (req, res) => {
   res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
   res.json({ message: "Cookie cleared" });
 };
+
 // @desc Forgot password
 // @route POST /auth/forgot-password
 // @access Public
@@ -115,7 +123,7 @@ const forgotPassword = async (req, res) => {
 
   if (user) {
     const passwordToken = crypto.randomBytes(70).toString("hex");
-    // send email
+
     await sendResetPasswordEmail({
       name: user.name,
       email: user.email,
@@ -137,6 +145,7 @@ const forgotPassword = async (req, res) => {
     .status(200)
     .json({ msg: "Please check your email for reset password link" });
 };
+
 // @desc Reset password
 // @route POST /auth/reset-password
 // @access Public
@@ -165,6 +174,7 @@ const resetPassword = async (req, res) => {
 
   return res.status(200).json({ msg: "Password reset successfuly" });
 };
+
 module.exports = {
   login,
   logout,

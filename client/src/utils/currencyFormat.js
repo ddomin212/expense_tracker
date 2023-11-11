@@ -2,7 +2,7 @@ const currencyFormat = (value, symbol, toEUR, toUSD) => {
   if (symbol === "USD") {
     value = value * toUSD;
   } else if (symbol === "EUR") {
-    value = value * toEUR; //TODO: předělat na actual převodní kurz
+    value = value * toEUR;
   }
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",

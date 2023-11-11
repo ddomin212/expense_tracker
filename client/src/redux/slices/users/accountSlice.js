@@ -7,7 +7,6 @@ export const fetchAccount = createAsyncThunk(
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -28,7 +27,6 @@ export const fetchAccountBasic = createAsyncThunk(
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -49,7 +47,6 @@ export const fetchMonthly = createAsyncThunk(
     const token =
       getState().users?.userAuth?.token || localStorage.getItem("user")?.token;
     const config = {
-      //lepší je specifikovat co se má poslat
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

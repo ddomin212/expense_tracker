@@ -9,16 +9,18 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchMonthly } from "../redux/slices/users/accountSlice";
+import { fetchMonthly } from "../../redux/slices/users/accountSlice";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 export default function MonthlyGraph({ type }) {
   const dispatch = useDispatch();
   const { monthlyData } = useSelector((state) => state?.accounts);
   const { currency } = useSelector((state) => state?.currency);
+
   useEffect(() => {
     dispatch(fetchMonthly(type));
   }, [dispatch]);
+
   const options = {
     responsive: true,
     plugins: {
@@ -27,8 +29,10 @@ export default function MonthlyGraph({ type }) {
       },
     },
   };
+
   let values = [];
   let counts = [];
+
   const labels = monthlyData?.monthly?.map((item) => {
     const d = new Date();
     d.setMonth(item._id - 1);
@@ -43,6 +47,7 @@ export default function MonthlyGraph({ type }) {
     counts.push(item.count);
     return monthName;
   });
+
   const data = {
     labels,
     datasets: [
@@ -56,5 +61,6 @@ export default function MonthlyGraph({ type }) {
       },
     ],
   };
+
   return <Bar options={options} data={data} />;
 }

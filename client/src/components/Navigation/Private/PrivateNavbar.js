@@ -7,6 +7,7 @@ const PrivateNavbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userAuth } = useSelector((state) => state?.users);
+  const links = ["Dashboard", "Profile", "Expense", "Income", "Buy"];
   return (
     <>
       <nav
@@ -27,35 +28,16 @@ const PrivateNavbar = () => {
           </button>
           <div class="collapse navbar-collapse" id="navcol-1">
             <ul class="navbar-nav mx-auto">
-              <li class="nav-item">
-                <a class="nav-link active" href="/dashboard">
-                  Dashboard
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/profile">
-                  Profile
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/expense">
-                  Expense
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/income">
-                  Income
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/buy">
-                  Buy
-                </a>
-              </li>
+              {links.map((link) => (
+                <li class="nav-item">
+                  <a class="nav-link active" href={`/${link.toLowerCase()}`}>
+                    {link}
+                  </a>
+                </li>
+              ))}
             </ul>
-            <a
+            <button
               class="btn btn-primary shadow"
-              role="button"
               onClick={() => {
                 dispatch(logoutUserAction());
                 navigate("/login");
@@ -63,7 +45,7 @@ const PrivateNavbar = () => {
               style={{ height: "50px" }}
             >
               Log Out
-            </a>
+            </button>
           </div>
         </div>
       </nav>

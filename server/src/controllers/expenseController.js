@@ -4,28 +4,29 @@ const Expense = require("../models/Expense");
 // @route   GET /api/expenses/user
 // @access  Private
 const getExpenses = async (req, res) => {
-  const expenses = await Expense.paginate(
+  const paginatedExpensesOfUser = await Expense.paginate(
     { user: req.user._id },
     { limit: 5, page: Number(req.query.page), populate: "user" }
   );
-  if (expenses.length === 0) {
-    return res.status(400).json({ msg: "No expenses found" });
+  if (paginatedExpensesOfUser.length === 0) {
+    return res.status(400).json({ msg: "No expenses for current user found" });
   }
-  res.status(200).json(expenses);
+  res.status(200).json(paginatedExpensesOfUser);
 };
 
 // @desc    Get all expenses
 // @route   GET /api/expenses
 // @access  Private
 const getAllExpenses = async (req, res) => {
-  const expenses = await Expense.paginate(
+  const allPaginatedExpenses = await Expense.paginate(
     {},
     { limit: 5, page: Number(req.query.page), populate: "user" }
   );
-  if (expenses.length === 0) {
+
+  if (allPaginatedExpenses.length === 0) {
     return res.status(400).json({ msg: "No expenses found" });
   }
-  res.status(200).json(expenses);
+  res.status(200).json(allPaginatedExpenses);
 };
 
 // @desc    Get expense by id
@@ -33,6 +34,7 @@ const getAllExpenses = async (req, res) => {
 // @access  Private
 const getExpenseById = async (req, res) => {
   const expense = await Expense.findById(req.params.id);
+
   if (!expense) {
     return res.status(400).json({ msg: "Expense does not exist" });
   }
@@ -48,13 +50,19 @@ const createExpense = async (req, res) => {
   if (!title || !amount || !description) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
-  const expense = Expense.create({
-    title,
-    amount,
-    description,
-    user: req.user?._id,
-  });
-  res.status(200).json({ msg: "Expense created" });
+
+  try {
+    const expense = await Expense.create({
+      title,
+      amount,
+      description,
+      user: req.user._id,
+    });
+    res.status(200).json({ msg: "Expense created" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ msg: "Internal Server Error" });
+  }
 };
 
 // @desc    Update expense
@@ -62,31 +70,36 @@ const createExpense = async (req, res) => {
 // @access  Private
 const updateExpense = async (req, res) => {
   const { title, amount, description, user } = req.body;
-  const expense = await Expense.findById(req.params.id);
-  if (String(req.user._id) !== String(expense.user))
+  const userExpense = await Expense.findById(req.params.id);
+
+  if (String(req.user._id) !== String(userExpense.user))
     return res.status(401).json({ msg: "Not authorized" });
-  if (!expense) {
+  if (!userExpense) {
     return res.status(400).json({ msg: "Expense does not exist" });
   }
-  if (title) expense.title = title;
-  if (amount) expense.amount = amount;
-  if (description) expense.description = description;
-  if (user) expense.user = user;
-  await expense.save();
-  res.status(200).json(expense);
+
+  if (title) userExpense.title = title;
+  if (amount) userExpense.amount = amount;
+  if (description) userExpense.description = description;
+  if (user) userExpense.user = user;
+
+  await userExpense.save();
+  res.status(200).json(userExpense);
 };
 
 // @desc    Delete expense
 // @route   DELETE /api/expenses/:id
 // @access  Private
 const deleteExpense = async (req, res) => {
-  const expense = await Expense.findById(req.params.id);
-  if (String(req.user._id) !== String(expense.user))
+  const userExpense = await Expense.findById(req.params.id);
+
+  if (String(req.user._id) !== String(userExpense.user))
     return res.status(401).json({ msg: "Not authorized" });
-  if (!expense) {
+  if (!userExpense) {
     return res.status(400).json({ msg: "Expense does not exist" });
   }
-  await expense.remove();
+
+  await userExpense.remove();
   res.status(200).json({ msg: "Expense removed" });
 };
 
@@ -95,13 +108,15 @@ const deleteExpense = async (req, res) => {
 // @access  Private
 const getFilteredExpenses = async (req, res) => {
   const { startDate, endDate, min, max, type } = req.body;
+
   if (!startDate || !endDate || !min || !max || !type) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
   if (startDate > endDate) {
     return res.status(400).json({ msg: "Start date cannot be after end date" });
   }
-  const expenses = await Expense.paginate(
+
+  const filteredExpenses = await Expense.paginate(
     {
       createdAt: {
         $gte: startDate || "1970-01-01",
@@ -115,10 +130,11 @@ const getFilteredExpenses = async (req, res) => {
     },
     { limit: 5, page: Number(req.query.page), populate: "user" }
   );
+
   if (expenses.docs.length === 0) {
     return res.status(400).json({ msg: "No expenses found" });
   }
-  return res.status(200).json(expenses);
+  return res.status(200).json(filteredExpenses);
 };
 
 module.exports = {

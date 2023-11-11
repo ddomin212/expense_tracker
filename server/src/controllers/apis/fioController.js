@@ -20,7 +20,11 @@ const connectFio = async (req, res) => {
   const id = req.user?._id;
   const maxdate = new Date().toISOString().split("T")[0];
   const timestamp = await Timestamp.findOne({ apiKey, user: id });
+
   const user = await User.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
 
   // create timestamp in mong for further fetching
   if (!timestamp) {
@@ -29,14 +33,10 @@ const connectFio = async (req, res) => {
       user: id,
     });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
     user.apiKeys["fio"] = [...user.apiKeys["fio"], apiKey];
     user.markModified("apiKeys");
     user.save();
   }
-  console.log(user.apiKeys["fio"]);
 
   // check if fetching is permitted by timestamp
   const mindate = timestamp?.updatedAt.toISOString().split("T")[0];

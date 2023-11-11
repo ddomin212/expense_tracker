@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { resetPassAction } from "../../redux/slices/auth/authSlice";
+import FormItem from "../../components/FormItem";
+import ErrorInlineMessage from "../../components/ErrorInlineMessage";
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -41,22 +43,9 @@ function ResetPass() {
         <h1 class="text-center">Reset Password</h1>
       </div>
       <div class="container d-flex justify-content-center flex-wrap">
-        {appErr || serverErr ? (
-          <div class="alert alert-danger" role="alert">
-            {serverErr} {appErr}
-          </div>
-        ) : null}
+        <ErrorInlineMessage appErr={appErr} serverErr={serverErr} />
         <form class="form-inline" onSubmit={formik.handleSubmit}>
-          <input
-            class="form-control"
-            type="text"
-            value={formik.values.email}
-            onChange={formik.handleChange("password")}
-            onBlur={formik.handleBlur("password")}
-            style={{ width: "35%", minWidth: "300px" }}
-            placeholder="Type your password here"
-            name="password"
-          />
+          <FormItem formik={formik} name={"password"} />
           <button
             class={`btn ${reset ? "btn-success disabled" : "btn-primary"}`}
             type="submit"

@@ -6,6 +6,7 @@ import {
 } from "../../redux/slices/users/accountSlice";
 import { fetchUserCurrency } from "../../redux/slices/users/currencySlice";
 import currencyFormat from "../../utils/currencyFormat";
+
 const Achievments = () => {
   const dispatch = useDispatch();
   const {
@@ -21,6 +22,7 @@ const Achievments = () => {
   const { userAuth, userAppErr, userServerErr } = useSelector(
     (state) => state.users
   );
+
   useEffect(() => {
     dispatch(
       userAuth?.user?.role === "User" ? fetchAccountBasic() : fetchAccount()

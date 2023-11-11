@@ -1,5 +1,6 @@
 const Expense = require("../models/Expense");
 const Income = require("../models/Income");
+
 //@desc Get expense and income stats for a user
 //@route GET /api/stats
 //@access Private
@@ -53,6 +54,7 @@ const accountStats = async (req, res) => {
     incomes: incomes.length !== 0 ? incomes : [zeroObject],
   });
 };
+
 //@desc Get net worth stats for a user
 //@route GET /api/stats/:id
 //@access Private
@@ -94,6 +96,7 @@ const accountNet = async (req, res) => {
     incomes: incomes.length !== 0 ? incomes : [zeroObject],
   });
 };
+
 //@desc Get monthly stats for a user (for chart)
 //@route GET /api/stats/:id
 //@access Private
@@ -138,4 +141,5 @@ const monthlyStats = async (req, res) => {
   }
   res.json({ monthly });
 };
+
 module.exports = { accountStats, monthlyStats, accountNet };

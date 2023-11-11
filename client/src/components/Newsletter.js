@@ -3,13 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { newsletterSubAction } from "../redux/slices/home/newsletterSlice";
+import { FormItem } from "./components";
+import ErrorInlineMessage from "./ErrorInlineMessage";
+
 const formSchema = Yup.object({
   email: Yup.string().required("Required field"),
 });
+
 function Newsletter() {
   const dispatch = useDispatch();
   const newsletter = useSelector((state) => state?.newsletter);
-  const { appErr, serverErr, loading, subbed } = newsletter;
+  const { appErr, serverErr, subbed } = newsletter;
   //formik form
   const formik = useFormik({
     initialValues: {
@@ -36,17 +40,8 @@ function Newsletter() {
             class="d-flex justify-content-center flex-wrap flex-lg-nowrap"
             onSubmit={formik.handleSubmit}
           >
-            <div class="my-2">
-              <input
-                value={formik.values.email}
-                onChange={formik.handleChange("email")}
-                onBlur={formik.handleBlur("email")}
-                class="border rounded-pill shadow-sm form-control"
-                type="email"
-                name="email"
-                placeholder="Your Email"
-              />
-            </div>
+            <ErrorInlineMessage appErr={appErr} serverErr={serverErr} />
+            <FormItem formik={formik} name="email" />
             <div class="my-2">
               <button
                 class={`btn ${

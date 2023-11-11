@@ -1,7 +1,8 @@
 import React from "react";
-import Footer from "../components/Footer";
+
 import Newsletter from "../components/Newsletter";
-function Home2() {
+
+const Home2 = () => {
   return (
     <>
       <header class="bg-dark">
@@ -314,9 +315,8 @@ function Home2() {
         </div>
       </section>
       <Newsletter />
-      <Footer />
     </>
   );
-}
+};
 
 export default Home2;

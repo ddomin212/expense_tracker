@@ -6,12 +6,11 @@ import { updateUserAction } from "../../redux/slices/users/usersSlice";
 function Payment() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
+
   const { payment } = useSelector((state) => state?.payment);
   const { userAuth } = useSelector((state) => state?.users);
-  useEffect(() => {
-    dispatch(fetchUserPayment());
-  }, []);
-  useEffect(() => {
+
+  const verifyPayment = () => {
     if (payment?.verificationToken === searchParams.get("session_id")) {
       dispatch(
         updateUserAction({
@@ -20,6 +19,14 @@ function Payment() {
         })
       );
     }
+  };
+
+  useEffect(() => {
+    dispatch(fetchUserPayment());
+  }, []);
+
+  useEffect(() => {
+    verifyPayment();
   }, [payment]);
 
   return (
