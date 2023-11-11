@@ -14,7 +14,7 @@ const formSchema = Yup.object({
   password: Yup.string().required("Required field"),
 });
 
-const LoginButtons = () => {
+const LoginButtons = ({ userIsLoading, dispatch }) => {
   const loginWithGoogle = () => {
     signInWithPopup(auth, new GoogleAuthProvider()).then((res) => {
       dispatch(
@@ -108,7 +108,10 @@ const Login = () => {
                 <FormItem formik={formik} name="email" />
                 <FormItem formik={formik} name="password" />
                 <FormItem formik={formik} name="token2fa" />
-                <LoginButtons />
+                <LoginButtons
+                  userIsLoading={userIsLoading}
+                  dispatch={dispatch}
+                />
               </form>
             </div>
           </div>
